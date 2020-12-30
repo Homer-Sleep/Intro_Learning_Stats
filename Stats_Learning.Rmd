@@ -1,0 +1,136 @@
+---
+title: "Statistical Learning"
+author: "Ryan, David"
+date: "12/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# install.packages('ISLR')
+library(ISLR)
+```
+
+## What is statistical learning
+### Prediction of Y using X
+
+Y = *f*(X) + e
+Y outcome of prediction
+*f* = some fixed by unknown function, represents the systematic information that X provides about Y
+X = predictor(s) 
+e = random error term independent of X with mean = 0
+
+With this we use X(years of education) to predict Y (Annual Income). 
+
+
+Y(hat) is the prediction of Y, not actual Y. The difference between the two comes from two factors *reducible error* and *irreducible error*. 
+*f*(hat) is the prediction of *f*, not actual *f*. The difference is *reducible error*. This is reduced by choosing the best statistical approach. 
+e is the unknown (unmeasured) predictors of Y or error, this is the *irreducible error*. 
+
+### Inference of X on Y
+Understanding how Y changes as a function of X1 : Xp. 
+Will want to know:
+- what predictors are associated with the response, some influence more than others
+- What is the relation between the response and each predictor? Negative? Positive? Interact with other predictors? 
+- Can the relation be summarized by linear equation or is it more complex?
+
+Linear model provides straightforward inference but may not have a good prediction. Other models (e.g., non-linear) may provide better prediction; 
+however, the inference is not very clear. 
+
+Parametric approach: 
+first make an assumption about the shape of *f*. If we assume linear: simple linear regression is a parametric. This is model selection. 
+Second, after the model has been selected we train or fit the model using training data. Most common approach is least squares. 
+Disadvantage true model may not fit the model (linear) we choose. Leading to a poor estimate. More flexible approaches could be used that can model many forms of *f*; however, these require estimating more parameters. Could also lead to *overfitting*, fitting the error or following the noise too closely. 
+
+Example of linear model:
+income ~=~ Bo + B1 * education + B2 * seniority 
+
+This leaves estimating Bo, B1 and B2, with least squares linear regression. This results in a straight line *f*, does not capture curvature. 
+
+Non-Parametric approach: 
+Non-parametric does not make the assumption about the shape of *f*, lets the data points shape *f* with some limits on how rough or erratic the shape of *f*. 
+Disadvantage is the requirement of a large number of observations (compared to parametric), as non-parametric does not reduce the number of parameters needed to estimate *f* (like parametric does). 
+
+Example: a thin-plate spline, smooth or rough, is a non-parametric approach. the book goes into the appropriate amount of smoothness without over fitting the data (points to chapters 5 and 7). 
+
+Trade off of prediction and interpretability 
+Again, a more restrictive approach yields better inference. More flexible (complicated) like thin-plate splines, fit the data but do not readily explain the relations of the variables. The *lasso* approach is very restrictive, sets the number of coefficients to zero. It has better inference as it results in a subset of predictors entered with non-zero coefficients. Generalized Additive Models (GAMs) extend the linear model for non-linear relations. This is harder to interpret as the relation is modeled as a curve, not a line. 
+
+Supervised versus Unsupervised 
+Supervised is mostly what is covered here. For each observation of the predictor measurement (Xp) there is an associated response measurement (Y). 
+Unsupervised, for each observation there is a predictor (x) but no associated response (Y). There is no response variable that can supervise the analysis. 
+One example is a cluster analysis, that is based on (x1:xn) do observations fall in to certain groups. Variables like zip code or income might define a group type of spending, without knowing the group type of spending. 
+Semi-supervised learning can be done if there are response variables for a subset of the data set. Beyond the scope of this book. 
+
+## Regression vs. classification
+Quantitative response variables use a regression; however, a qualitative (yes/no) response (*K* different classes or categories) can use a logistic regression. Predictor variable types are not as important as the response variable type. 
+
+## Assessing Model Accuracy 
+*No free lunch* - there is no one methods that is better than all others over all data sets. 
+
+### Measuring the quality of Fit
+Need to quantify how well the predicted response variable is to the observed response variable. For regression the *mean squared error* (MSE) 
+MSE = 1/n E(yi-f(xi))^2
+
+f(xi) - f prediction for xi observation
+
+*Average squared prediction error* (Ave) is the fit of our model not to training data but to a untrained data set (test data set). 
+Ave (y0 - f(x0))^2 
+where y0 and x0 are test data variables. 
+
+The smaller the number the better the fit. 
+
+Degrees of freedom - quantity that summarizes the flexibility of a curve. 
+
+If the true *f* is non-linear then the linear fit (lowest *df*) will not be flexible enough to have a good fit. 
+If we plot flexibility (*df*) by MSE of the fit of test data and training data we can see which model has a good fit, bad fit, or over fitted (too many *df*, or wiggly). The models with the best fit will be closest to the error line (this delineates reducible error from irreducible error). Over fitted models have modeled the *irreducible error* and will not fit test data. Over fitting applies when a less flexible model would have lower test MSE than a more flexible model. 
+
+Cross-validation - the method of estimating test MSE from training data. 
+
+### Bias-Variance trade-off
+
+A better way to think about Ave or test MSE, 
+Average of E (y0 - f(xo))^2 over all possible values x0 in the test set. 
+
+Note, variance is nonnegative, squared bias is nonnegative, thereore, the expected test MSE can never be lower that error variance (irreducible error) . 
+
+Here Variance referrers to the amount *f* would change over different training data (reliability of *f*). We want low variability, more reliable *f*. More flexible models have higher variance. The eventually the flexibility models more than the predictors and models the error of the data set which changes with each data set giving more variance. 
+
+Here bias refers to the bias of the approach used. A linear model has high bias to a linear shape, a more flexible model has lower bias. This of this as a measure of the *reducible error*. 
+
+Cross Validation (Chapter 5):
+estimate the test MSE using the training data. *leave one out?* 
+
+### Classification setting
+Similar to regressing setting, now we have a categorical response. 
+Error Rate - most common approach for quantifying the accuracy of the estimate *f*
+1/n E I(yi /=/ yi)
+
+the indicator variable equals 1 for incorrect and 0 for correct. The equation gives the faction of incorrect classifications. 
+#### Bayes Classifier
+Assigning class by which predictor is higher in a two-class response variable. 
+Pr(Y=j|X=x0) > 0.5 = class 1; < 0.5 = class 2. 
+This probability is generated for each X1 and X2 value. 
+
+Bayes Error Rate, similar to irreducible error: 
+1-E (max(j) Pr(Y =j|X))
+
+### K-Nearest Neighbors
+Examine the *K* nearest points to a given data point, assign the given data point of the *K* probability. If we set *K* = 3, the 3 closest points to the point to be predicted are 2/3 blue, 1/3 orange. So the to predicted data point is = blue. Very simple approach and is very close to the unobtainable Bayes classifier. The flexibility of decision boundary (how wiggly) is inverse to the *K* size, larger *K* more wiggles, smaller *K* more linear. 
+
+The size of *K* and the resulting test error rate shows the variance (the reliability of the flexibility) and bias (tendency of model shape) trade-off, with similar results as the regression models. 
+
+
+```{r}
+
+```
+
+
+```{r}
+data(Income)
+
+```
+

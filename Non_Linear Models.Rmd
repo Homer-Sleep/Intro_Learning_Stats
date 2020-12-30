@@ -1,0 +1,121 @@
+---
+title: "Non-Linear"
+author: "Ryan, David"
+date: "12/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Non-linear models
+Polynomial regression
+Step Functions
+Regression splines
+Smoothing splines
+Local regression
+Generalized additive models
+
+
+## Lab
+
+```{r}
+library(ISLR)
+attach(Wage)
+
+# Polynomial regression
+# use the poly() to enter the predictor and number of polynomials
+fit = lm(wage~ poly(age,4), data = Wage)# Returns a matrix where the columns are a basis of orthogonal polynomials, which means that each column is a linear combination of all the polynomials (^1:^4)
+coef(summary(fit)) 
+
+# we can use poly(, raw=T) to get the polynomials directly
+fit2 = lm(wage~poly(age, 4, raw = T), data = Wage)
+coef(summary(fit2))
+
+#  the ^ has special meaning in a function, so we need to wrap it up! Previously I use I() to wrap it. Here is a better way:
+fit2b = lm(wage~cbind(age, age^2, age^3, age^4), data = Wage)
+coef(summary(fit2b))
+
+# Now create a grid of values a for age at which we want predictions, using predict(), specifying SE
+agelims = range(age)
+age.grid = seq(from = agelims[1], to = agelims[2])
+preds=predict(fit, newdata = list(age = age.grid), se = TRUE)
+se.bands = cbind(preds$fit+2*preds$se.fit, preds$fit-2*preds$se.fit)
+# Now plot the data and add the fit from the degree-4 polynomial
+par(mfrow=c(1,2), mar = c(4.5, 4.5, 1,1), oma = c(0,0,4,0))
+plot(age, wage, xlim = agelims, cex = .5, col = "darkgrey")
+title("Degree-4 Polynomial", outer = T)
+lines(age.grid, preds$fit, lwd = 2, col = "blue")
+matlines(age.grid, se.bands, lwd=1, col = "blue", lty = 3)
+```
+
+Notice the two dotted lines that are above and below the fitted line. These are x2 standard error curves. Where did these come from? 
+Least squares returns variance estimates for each of the fitted coefficients Bj. This is used to compute the estimated variance of f(x0), the predicted value of one x value. The square-root of this variance is the pointwise standard error of f(x0). Just as the square-root of variance is the standard deviation, for one point it is the stand error (e.g, /n when n=1).  This is done for each point of x, with 2x the standard error (approximates 95% confidence). 
+
+The fitted line is a result of all polynomials together. How much each polynomial contributes to the shape can be examined by a nested-model ANOVA (similar to a GLMM). 
+```{r}
+fit.1 = lm(wage~age, data = Wage)
+fit.2 = lm(wage~poly(age,2), data = Wage)
+fit.3 = lm(wage~poly(age,3), data = Wage)
+fit.4 = lm(wage~poly(age,4), data = Wage)
+fit.5 = lm(wage~poly(age,5), data = Wage) # extra one included here.... just for poops and laughs 
+anova(fit.1, fit.2, fit.3, fit.4, fit.5)
+
+```
+
+This model comparison shows that model 2 (quadratic) explains significantly more variance that model 1 (linear). Then we see that 3 (cubic) explains more than 2. Model 4 (quartic) explains only slightly more than 3. And 5 does not explain a significant amount and is not justified. 
+
+Note, use this anova() approach as it works for polynomials that are orthogonal or not, and if additional factors are added. 
+Additional note, orthogonal polynomials - each polynomial is independent of the others, e.g., factors for poly(x, 1:3) will be the same as 1:3 in ploy(x, 1:8). 
+
+
+We also notice in the figure what seems to be a separate group making >250K. We can use logistic regression to see the probability of being in this high earnings group using 250 as the cut-off. 
+This is done similarly as above but with the creation of a response vector (we use the I() to wrap the wage>250) and use glm(, family = "binomial"). 
+The I(wage>250) lists a Boolean factor that glm() coerces into 1/0
+
+```{r}
+fit = glm(I(wage>250)~ poly(age,4), data = Wage, family = "binomial")
+# use predict() to make predictions
+preds=predict(fit, newdata = list(age=age.grid), se=T)
+# calculating the confidence intervals requires a transformation: 
+pfit = exp(preds$fit)/(1+exp(preds$fit))
+se.bands.logit = cbind(preds$fit+2*preds$fit, preds$fit-2*preds$fit)
+se.bands = exp(se.bands.logit)/(1+exp(se.bands.logit))
+# could use predict( type = "response") however this would give negative probabilities. 
+
+# now plot
+plot(age,I(wage>250), xlim = agelims, type ="n", ylim = c(0,0.2))
+points(jitter(age), I((wage>250)/5), cex=.5, pch="|", col = "darkgrey")
+lines(age.grid, pfit, lwd = 2, col = "blue")
+matlines(age.grid, se.bands, lwd=1, col="blue", lty = 3)
+
+```
+
+Polynomial functions impose a global shape on the non-linear function of X. 
+
+##
+Step Functions
+##
+A step function breaks the range of X into bins and fits a constant for each bin. This converts a continuous variable to a ordered categorical variable. Use cut points (C) for the range of X (CK) then K+1 variables: C0 = X< C1, CK(X) = CK < = X)
+The size of the bin can be too large and average out a change in Y. 
+
+Polynomial and piecewise-constant (step function) regression models are part of basis function approach. Instead of fitting one function to X, we fit a family of functions. Similar to a linear model, there are several functions applied to X and they are additive and use least squares estimates, making the inference easy. Including SE and F score of over all model fit. 
+
+##
+Regression Splines
+##
+
+Piecewise Polynomials
+
+
+##
+Generalized additive model GAMs
+##
+Previously we looked at making simple linear regression more flexible. Here we explore the problem of flexibly predicting Y on the basis of several predictors (Xp). This is an extension of multiple linear regression. 
+GAMs provide a general framework for extending a standard linear model by allowing non-linear functions of each of the variables, while maintaining additivity. Additive means that we can calculate a separate function for each Xj and then add together the contributions. 
+
+GAM allows a (smooth) non-linear function to be calculated for each predictor
+
+
+
