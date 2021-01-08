@@ -58,3 +58,25 @@ plot(hatvalues(lm.fit1))
 which.max(hatvalues(lm.fit1))
 ```
 
+## 
+Multiple Regression
+##
+If there are multiple predictors, a simple regression ignores these when coefficients are estimated. This is of great importance if there is a correlation between predictors, an interaction. 
+Multiple regression allows for each predictor to have its own slope (B1, B2, ... Bp). To estimate multiple coefficients matrix algebra is used (not covered here). 
+Comparing the output shows the effect of each predictor while holding the other predictors constant, or controlling for other predictors.
+
+Important Questions:
+
+1) Is there a relation between the response and the predictor? 
+simple linear regression null hypothesis - is predictor (B) =0? Multiple regression null - are any of the predictors (Bj) non-zero? 
+
+
+
+
+
+
+
+
+
+
+
