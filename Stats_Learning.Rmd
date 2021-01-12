@@ -28,7 +28,7 @@ With this we use X(years of education) to predict Y (Annual Income).
 
 Y(hat) is the prediction of Y, not actual Y. The difference between the two comes from two factors *reducible error* and *irreducible error*. 
 *f*(hat) is the prediction of *f*, not actual *f*. The difference is *reducible error*. This is reduced by choosing the best statistical approach. 
-e is the unknown (unmeasured) predictors of Y or error, this is the *irreducible error*. 
+*e* is the unknown (unmeasured) predictors of Y or error, this is the *irreducible error*. 
 
 ### Inference of X on Y
 Understanding how Y changes as a function of X1 : Xp. 

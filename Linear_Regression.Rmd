@@ -65,17 +65,98 @@ If there are multiple predictors, a simple regression ignores these when coeffic
 Multiple regression allows for each predictor to have its own slope (B1, B2, ... Bp). To estimate multiple coefficients matrix algebra is used (not covered here). 
 Comparing the output shows the effect of each predictor while holding the other predictors constant, or controlling for other predictors.
 
-Important Questions:
+Important Questions (pg 75):
 
 1) Is there a relation between the response and the predictor? 
 simple linear regression null hypothesis - is predictor (B) =0? Multiple regression null - are any of the predictors (Bj) non-zero? 
+This is related to an *F* test - *F* = (Total SS - Residual SS)/ num of predictors(p) // Residual SS / (n - p - 1)
+Numerators shows the SS accounted for by each predictor and the denominator shows the residual variance divided by the sample size with a predictor penalty. 
+
+Partial effect - examines the effect of adding a variable to a model
+To examine the partial effect of certain variables (the number of which is called *q*), one model includes all variables (RSS) and another has the certain variables excluded (RSS0). Apply these to an *F* test - *F* = (RSS0 - RSS) / *q* // RSS/ (n-p-1). 
+Numerator shows the difference of residual variance between the two models for each predictor examined (*q*). 
+This type of *F* test that omits a predictor is the same as the *t*(^2) test provided by the model, this shows the partial effect of adding each predictor. 
+
+Using the *t* and p-value for each predictor is flawed as it does not correct for the number of predictors in the model (like the *F* test does), for which there is a 5% chance of a type II error. 
+
+When *p* is > n, we need forward selection or other high-dimensional settings, chapter 6. 
+
+2) Deciding on important variables
+Looking at the p-values for each predictor is one way to assess the important ones; however, when *p* is high there could be a type II error. A process called variable selection is a better approach. (Chap. 6)
+The method mentioned above becomes problematic with multiple predictors. It takes the comparison of 4 models to evaluate 2 predictors. It takes 2^*p* to evaluate in this manner. 
+
+Other methods include:
+
+Forward Selection: start with a null model and fit *p* simple linear models. Then add to the null the predictor that has the lowest RSS. Then add the next predictor that results in the lowest RSS until a stopping threshold is met. 
+
+Backward selection: start with all predictors in the model and then remove the predictor with the largest p-value. Refit the new model and repeat till a threshold it met (like all variables have p< 0.001. 
+
+Mixed Method: Starts with the forward approach of adding the predictor with the best fit. As predictors or other variables are added the p-values change. If the p-value of a variable goes above a threshold then it is removed. These steps go back and forth until all variables in the model are below a threshold and the ones out of the model are above a threshold. 
+
+Backward selection cannot be used when *p* > n. Mixed approach address the greediness or redundant variables of the forward approach. 
+
+3) Model Fit:
+RSE (residual SE) and R^2. R^2 is the square of the correlation of the response and predictor. For multiple regression it is the correlation of the (Y and Yhat)^2. Note, a fitted linear model finds the maximum correlation between the predicted outcome variable and the outcome variable. The R^2 is a range 0-1. As we add more predictors to the model we get higher R^2; however, this may be a result of overfitting when the increase of the R^2 is minimal. 
+Similar to R^2, RSE can be used to examine model fit for each predictor added to the model. If adding a predictor only decreases the RSE slightly or increases RSE, then it is not useful in the model. 
+
+RSE = sqrt of 1/ n-p-1 * RSS
+
+So RSE does have a penalty of adding predictors while R^2 does not, even though RSS decreases with more predictors. This balances the trade off of adding predictors and how much variance they account for. 
+
+You can also plot the data to show the variance of each data point to the regression line. If there is an interaction of predictors, the true fit might be non-linear. 
+
+4) Predictions (pg 82)
+Once we have a model it is easy to make predictions; however there are three types of uncertainty to address: 
+1) the coefficient estimates (B0, B1, B2) are estimates of the true population. inaccuracy of the coefficient estimates is related to the reducible error (can be addressed with model shape/approach). Confidence interval shows how close the Y(hat) is to the true *f*(X). 
+
+2) Part of the reducible error is introduced by the model bias. The true f(X) may not be linear even though we are using a linear model. 
+
+3) Even if we knew f(X), that is the real values of Bp, the response cannot be predicted perfectly due to the error in the model (irreducible error). *Prediction Intervals* are used to estimate how much true Y will vary from Y(hat). Prediction intervals are wider than confidence intervals because it incorporates the reducible error and the irreducible error. 
+
+Confidence interval looks at all data points, or average of the outcome variable, and gives a 95% CI range. The prediction interval looks a the prediction CI of a singular outcome variable, not the average ov all outcome variables. The prediction CI range is much wider given the increased uncertainty of a singular prediction accuray vs. the predicted accuracy of the average of the outcome variable. 
+
+Multiple Regression Lab (pg 113)
+
+```{r}
+# lm() is used for multiple regression with the syntax of lm(y ~ x1 + x2 + x3)
+lm.fit1 = lm(medv~lstat+age, data = Boston)
+summary(lm.fit1)
+
+# to include all variables in a data set as predictors use "." :
+lm.fit1 = lm(medv ~ ., data = Boston)
+summary(lm.fit1)
+
+# want to look at specific parts of the model output?
+?summary.lm
+
+# R^2
+summary(lm.fit1)$r.sq
+# RSE
+summary(lm.fit1)$sigma
+
+# car package can calculate the variance inflation factors (VIF) <- WTF is that ??
+library(car)
+vif(lm.fit1)
+# what if we are using the Backward selection method and want all predictors except those that are not p< 0.5? this removes age 
+lm.fit2 = lm(medv ~ . -age, data = Boston)
+summary(lm.fit2)
+
+#can also update() models
+lm.fit2 = update(lm.fit1, ~.-age)
+summary(lm.fit2)
 
 
+```
 
+Interaction Terms
+```{r}
+# syntax lstat:black is the explicit way of including an interaction term. Easier method is lstat*black, this included the two predictors of lstat and black as well as the interaction term. 
+summary(lm(medv ~ lstat*age, data = Boston))
+```
 
+** Other Consideration in the Regression Model ** (pg 83)
 
-
-
+Qualitative predictors:
 
 
 
