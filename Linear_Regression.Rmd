@@ -154,9 +154,121 @@ Interaction Terms
 summary(lm(medv ~ lstat*age, data = Boston))
 ```
 
-** Other Consideration in the Regression Model ** (pg 83)
+**Other Consideration in the Regression Model** (pg 83)
 
 Qualitative predictors:
+Qualitative or factors are usually handled as a dummy variable. 
+First example: Code as 1 = female and 0 = male. This makes B0 the average effect for male and B1 is the difference of female verses male. 
+2nd: 1 = female, -1 = male. B0 is the average result ignoring male/female effects. B0+B1 would be female and B0- B1 would be male, thus B1 would equal the average difference between M/F. 
+
+More than two levels:
+B1 = 0 Not Asian, B1 = 1 is Asian. 
+B2 = 0 Not Caucasian, B2 = 1 is Caucasian. 
+B0 = is African American. This is the baseline. B1 and B2 apply the difference of each group from the baseline group. 
+Remember, you can regress Y on whatever qualitative and quantitative predictors you want. 
+
+**Extensions to the Linear Model** (pg 87)
+
+Linear Regression has two important assumptions about the relation between predictor and outcome:
+1) the shape of the relation is linear
+2) and Additive:
+  Additive assumption is that the effect from a predictor on the response is independent of other predictors. That the change in the response Y due to a one-unit change in X is constant, regardless of the value of X. 
+  
+How to address additive assumption:
+This assumption can not correctly model an interaction effect (e.g., one predictor interacts (changes the effect) of another predictor). 
+Introducing a third (interaction) term allows for two predictors to have a combined effect on the outcome. 
+Y = B0+ B1(X1) + B2(X2) + B3(X1 x X2) + e
+or
+Y = β0 + (β1 + β3X2)X1 + β2X2 + e 
+Y = β0 + β˜ β1X1 + β2X2 + e
+β˜ changes with X2, the effect of X1 on Y is no longer constant, that is changing X2 will alter the effect of X1 on Y. 
+
+
+
+1.2 + 3.4 × lines + 0.22 × workers + 1.4 × (lines × workers)
+= 1.2 + (3.4 + 1.4 × workers) × lines + 0.22 × workers.
+
+```{r}
+lines = 4
+workers = 20
+
+1.2 + 3.4 * lines  + 1.4 * (lines * workers)+ 0.22 * workers
+1.2 + (3.4 + 1.4 * workers) * lines + 0.22 * workers # this just adds the coefficients of lines and works together then multiplies them by the number of lines and workers. 
+```
+The interaction term (B3) captures the change in the effectiveness of one variable for one unit increase in another variable. Listed on the output table the of TV x Radio would mean the amount of change in TV effectiveness given one unit of Radio.
+```{r}
+# the model without the interaction has R2 = .897 and with interaction term R2 = .968 so...
+M1_R2 = 89.7
+M2_R2 = 96.8
+(M2_R2 - M1_R2) / (100 - M1_R2) # numer is the difference in the models (7.1% higher with interaction) and denom (10.3 %) is the variance unexplained by the main effects only model. 
+# this means that 69% of the variability in sales (outcome) that remains after fitting the additive model (main effects only) has been explained by the interaction term.
+```
+
+
+If there are no main effects but a significant interaction, the main effects should stay in the model. It does not hurt to keep them and the main effects are usually correlated with the interaction so removing them can alter the interpretation of the model. 
+
+Qualitative variable interactions work well. They create a separate line for each group: 
+outcome = B1+ (B0+B2 {for student} or B0 {for non-student})
+
+Student and non-student have different intercepts (B0 + B2 or B0) but the same slope (B1). Now add the grouping interaction term:
+outcome  = (B0 + B2) + (B1 + B3) for student and B0 + B1 for non student
+
+This allows for the interaction of the predictors thus, allows for different slopes (B1+B3) vs. (B1). 
+
+
+
+Non-linear Relations:
+Extend the linear model with polynomials (e.g., ^1:5). 
+
+
+**Potential Problems** (pg 92)
+These problems can occur when fitting a linear model:
+
+1) Non-linearity of the response-predictor relation
+2) correlation of error terms
+3) Non-constant variance of error terms
+4) Outliers
+5) High-leverage points
+6) Collinearity
+
+addressing these can be an art applied science. 
+1) Non-linearity of the Data
+Linear regression assumes a strait line relation between predictor and outcome. If there is a non-linear relation, then residual plots can help visualize the pattern. Residual plots take e = y- y(hat) on the y-axis and the predictor on the x-axis. Deviation from the middle of the y-axis shows the difference of the predicted vs. actual outcome. Across the x-axis patterns can emerge that show how the real data are diffent from the model prediction. Adjustments to the model can be based on the residual plot. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
