@@ -233,7 +233,14 @@ These problems can occur when fitting a linear model:
 
 addressing these can be an art applied science. 
 1) Non-linearity of the Data
-Linear regression assumes a strait line relation between predictor and outcome. If there is a non-linear relation, then residual plots can help visualize the pattern. Residual plots take e = y- y(hat) on the y-axis and the predictor on the x-axis. Deviation from the middle of the y-axis shows the difference of the predicted vs. actual outcome. Across the x-axis patterns can emerge that show how the real data are diffent from the model prediction. Adjustments to the model can be based on the residual plot. 
+Linear regression assumes a strait line relation between predictor and outcome. If there is a non-linear relation, then residual plots can help visualize the pattern. Residual plots take e = y- y(hat) on the y-axis and the predictor on the x-axis. Deviation from the middle of the y-axis shows the difference of the predicted vs. actual outcome. Across the x-axis patterns can emerge that show how the real data are different from the model prediction. Adjustments to the model can be based on the residual plot. Simple transformations to the data include log(), sqrt(), and ^2. More advanced options in non-linear chapter. 
+
+2) Correlation of Error Terms
+It is an assumption of linear regression that the error terms for each entry (e1,e2, en) are uncorrelated. If they are correlated then the SE will be underestimated an have narrower prediction and confidence intervals thus, lower p-values. This could result in a Type-II error. 
+This is an issue for time-series data (EEG!!), Adjacent time points will have positively correlated errors. This is examined by plotting the residuals from the model as a function of time. If adjacent residuals have similar values, this is called tracking and could be correlated error terms. No more information provided...
+
+3) Non-constant Variance of error terms
+
 
 
 
