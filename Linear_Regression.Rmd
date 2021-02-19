@@ -233,14 +233,46 @@ These problems can occur when fitting a linear model:
 
 addressing these can be an art applied science. 
 1) Non-linearity of the Data
-Linear regression assumes a strait line relation between predictor and outcome. If there is a non-linear relation, then residual plots can help visualize the pattern. Residual plots take e = y- y(hat) on the y-axis and the predictor on the x-axis. Deviation from the middle of the y-axis shows the difference of the predicted vs. actual outcome. Across the x-axis patterns can emerge that show how the real data are different from the model prediction. Adjustments to the model can be based on the residual plot. Simple transformations to the data include log(), sqrt(), and ^2. More advanced options in non-linear chapter. 
+Linear regression assumes a strait line relation between predictor and outcome. If there is a non-linear relation, then residual plots can help visualize the pattern. Residual plots take e = y- y(hat) on the y-axis and the predictor on the x-axis. Deviation from the middle of the y-axis shows the difference of the predicted vs. actual outcome. Across the x-axis patterns can emerge that show how the real data are diffent from the model prediction. Adjustments to the model can be based on the residual plot. 
 
 2) Correlation of Error Terms
-It is an assumption of linear regression that the error terms for each entry (e1,e2, en) are uncorrelated. If they are correlated then the SE will be underestimated an have narrower prediction and confidence intervals thus, lower p-values. This could result in a Type-II error. 
+It is an assumption of linear regression that the error terms for each entry (e1,e2, en) are uncorrelated. If they are correlated then the SE will be underestimated an have narrower prediction and confidence intervals thus, lower p-values. This could result in a Type-II error.
 This is an issue for time-series data (EEG!!), Adjacent time points will have positively correlated errors. This is examined by plotting the residuals from the model as a function of time. If adjacent residuals have similar values, this is called tracking and could be correlated error terms. No more information provided...
 
 3) Non-constant Variance of error terms
+Consistent variance is an assumption of confidence intervals and the linear model. This is not always a true assumption, as the response variable increases the error my increase. This is heteroscedasticity and is shown as a funnel shape on the residual plot. A log or sqrt transform can limit this effect. Another remedy is the weighted least squares variance, weighting larger nth observations. 
 
+4) Outliers
+Outliers are observations for which the response y is unusual given the predictor. An outlier due to data collection should be removed; however, justification of removal without evidence of data collection error is not recommended. The removal of an outlier my have little impact on the regression line but will largely impact the R^2 and RSE (and thus confidence intervals). A residual plot helps identify these; however, and studentized residual plot gives a threshold of >3 is an outlier. Studentized Residuals are take the error of each observation and divide by its estimated standard error. 
+
+5) High leverage Points (pg 98)
+Similar to outliers, observations with High leverage have an unusual value for x. A high value for x greatly impacts the regression line (high leverage point) and affects the fit of the model. Linear regression with one predictor is easy to spot a high leverage point, it sits way outside the other points. In multiple regression, you need to have the model with all predictors included to see the leverage point as it maybe well inbounds for each single predictor, you need the overall model to see if it is outside the other predicted points. 
+Also, there is a test statistic for it: 
+
+hi = 1/n + (xi - x(mean))^2 // Sigma n of i` = 1 (xi` - x(mean))^2 
+
+if a given observation has a leverage statistic (hi) greatly exceeds (predictions+1)/n then it is 'sus' for a high leverage point. 
+
+6) Collinearity 
+The situation when two or more predictors are closely related (correlated). Example of credit limit and credit rating are highly colinear, these measures have common influcesers and there effects overlap and cannot be separated. This reduces the accuracy of the estimates and increases the RSS for both measures and could result in a Type I error. If there is colinearaty of two measures there should be significant correlations in the correlation matrix of the model. However, if there are multiple measures correlated but not correlated in pairs, it will not show up in the correlation matrix. This is called multicollinearity. This is examined through the variance inflation factor (VIF), the ratio of Bj when fitting the model divided by the variance of Bj of fit on its own. Scale of 1 (lowest), above 5 or 10 indicates problematic collinearity:
+
+VIF(Bj) = 1 // 1-R^2xj|x-j
+Denominator is the R^2 from a regression of Xj onto all other predictors. Example, VIF of credit rating and limit is 160 and 160. 
+Since the colliniearity is a redundencey of variance between variables, we simply drop one of the variables. Or combine the two variables into a single predictor, the average of standerized version sof limit and rating = new variable of credit worthiness. 
+
+**The Marketing Plan**
+The seven important questions applied to the Advertising data set. 
+
+1) Is there a relation between advertising sales and budget? 
+The regression of sales on TN, Radio, & Newspaper was significant. 
+
+2) How strong is the relation? 
+Two measures of model accuracy 1) RSE is 1,681 and the mean value of the response is 14,022 yielding a 12% percentage error. 2) the R^2 is 0.90, explains 90% of the variance in sales. 
+
+3) Which contributed to the outcome? 
+The p-values show that TV and Radio were significant predictors not so much for Newspaper. 
+
+4) How large if the effect of each predictor on the outcome? 
 
 
 
