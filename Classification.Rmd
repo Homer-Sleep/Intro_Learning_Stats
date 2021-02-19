@@ -1,0 +1,26 @@
+---
+title: "Classification"
+author: "Ryan, David"
+date: "2/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(ISLR)
+```
+
+# Classification Chapter 4 (pg 127)
+
+For use when the response variable is qualitative. linear regression does not work. Example, three categories of outcome (stroke, drug overdose, epileptic seizure) and linear regression assumes there is a progression or 'order' with equal difference in the outcomes. In reality, there is no order and the differences are not equal (unknown, just a different category). 
+
+
+Use the Default data set.   
+
+```{r}
+Default = Default
+plot(Default$balance, Default$income, pch = c("+", "*"), col = c('blue', 'red'))
+```
+
+
