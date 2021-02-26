@@ -13,7 +13,27 @@ library(ISLR)
 
 # Classification Chapter 4 (pg 127)
 
-For use when the response variable is qualitative. linear regression does not work. Example, three categories of outcome (stroke, drug overdose, epileptic seizure) and linear regression assumes there is a progression or 'order' with equal difference in the outcomes. In reality, there is no order and the differences are not equal (unknown, just a different category). 
+For use when the response variable is qualitative. linear regression does not work. Example, three categories of outcome (stroke, drug overdose, epileptic seizure) and linear regression assumes there is a progression or 'order' (mild, moderate, severe) with equal difference in the outcomes. In reality, there is no order and the differences are not equal (unknown, just a different category). 
+Exception is if the outcome is binary, then a linear regression could fit. Example, if Yhat is < or > 0.5 an outcome is chosen. Note that some predictions may be outside the 0 to 1 interval! This happens whenever a straight line (linear regression) is applied to a binary response. 
+
+## Logistic Regression (pg 130)
+This provides an output between 0-1 for all values of probability of X or p(X). 
+
+Logistic Function:
+p(x) = eB0+B1X // 1+eB0+B1X
+
+the output of this function gives use the odds:
+p(x) // 1-p(x)
+
+This is the same odds ratio of a horse race bet 1:1, 9:1, 1/4:1. Answers the question "What are the odds of *categorical outcome* happening?"
+We can also get the log-odds or logit: 
+
+log(p(X)//1-p(X) = B0 +B1X
+
+This is very similar to a linear equation; however, a unit increase in X does not increase the outcome by B1. This is a key difference. Logistical regression a increase by one unit of X changes the log odds or logit (above) by B1. Note the relation between probability of X or p(X) and X is not linear (this is not a linear model). The change in p(X) is directly related to the value of X. 
+
+## Estimating the Regression Coefficients (PG 133)
+Previously in linear regression we used the least squares methods to estimate the coefficients, this function uses Maximum Likelihood (can also be used in linear regression). 
 
 
 Use the Default data set.   
