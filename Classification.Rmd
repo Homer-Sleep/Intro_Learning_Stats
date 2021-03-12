@@ -35,8 +35,32 @@ This is very similar to a linear equation; however, a unit increase in X does no
 ## Estimating the Regression Coefficients (PG 133)
 Previously in linear regression we used the least squares methods to estimate the coefficients, this function uses Maximum Likelihood (can also be used in linear regression). 
 
+In the example we see that balance (B1 = 0.0055), this means that a one unit increase in balance increases the PROBABILITY of default by 0.0055. To examine how accuracy of the coefficient by getting the z-statistic
+z = B1//SE(B1)
+A large value is evidence against the null (B1 = 0). 
+The intercept is not of interest, it's main purpose is to adjust the average fitted probabilities to the proportion of the ones in the data. 
 
-Use the Default data set.   
+## Making Predictions (pg 134)
+What is E???
+```{r}
+E = ?? 
+B0=-10.6513
+B1 = 0.0055
+BalanceX = 1000
+(B0 + (B1*BalanceX)) / (1+B0 + (B1*BalanceX))
+```
+## Multiple Logistic Regression
+Adding more predictors is good, can find confounding variables and better explain effects. Example from book shows that Student 0|1 by run by itself is a positive coefficient, being a student increases the chance of defaulting on loan. However, when other predictors of balance and income are added, Student is not a negative coefficient, being a student decreases chances of defaulting on loan. How did this happen? When averaging out other predictors and not taking them into account (running Student by itself), Students on average carry a higher balance and higher balance is correlated with higher chances of default. However, when Student and Balance are included we see that there is a separation that shows students have a higher balance but have a lower default rate. Both need to be included to see this separation. 
+
+## Logistic regression for > 2 Classes
+This is possible for Logistical Regression, however, Linear Discriminant Analysis is preferred 
+
+## Linear Discriminant Analysis (138)
+Better than Logistic for multiple classes - if classes are well separated logistic is unstable or if small n. 
+
+
+
+Use the credit card Default data set.   
 
 ```{r}
 Default = Default
